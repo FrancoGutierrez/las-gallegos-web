@@ -31,7 +31,7 @@ window.MENU_PRODUCTS = [
     available: true,
     tag: "Favorito de la casa",
     description: "Chicharrón dorado al estilo tradicional arequipeño, crocante y servido generoso.",
-    image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80"
+    image: "assets/chicharron.jpg"
   },
   {
     id: "mixto",
@@ -45,7 +45,7 @@ window.MENU_PRODUCTS = [
     available: true,
     tag: "Especialidad",
     description: "Lo mejor de nuestra cocina: sencca tradicional y chicharrón crocante en un solo plato.",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80"
+    image: "assets/mixto.jpg"
   },
   {
     id: "sencca",
@@ -59,7 +59,7 @@ window.MENU_PRODUCTS = [
     available: true,
     tag: "Tradición arequipeña",
     description: "Nuestra sencca preparada con receta tradicional de picantería arequipeña.",
-    image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80"
+    image: "assets/sencca.jpg"
   },
   {
     id: "pastel",
@@ -69,7 +69,7 @@ window.MENU_PRODUCTS = [
     available: true,
     tag: "Clásico arequipeño",
     description: "Horneado al estilo arequipeño, suave por dentro y doradito por fuera.",
-    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80"
+    image: "assets/pastel-de-papa.jpg"
   },
   {
     id: "rocoto",
@@ -79,7 +79,7 @@ window.MENU_PRODUCTS = [
     available: true,
     tag: "Clásico arequipeño",
     description: "El ícono de Arequipa, sazonado al punto justo con tradición picantera.",
-    image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80"
+    image: "assets/rocoto-relleno.jpg"
   },
   {
     id: "sand-chicha",
@@ -89,7 +89,7 @@ window.MENU_PRODUCTS = [
     available: true,
     tag: "Para llevar",
     description: "Pan crocante relleno con nuestro chicharrón tradicional, ideal para cualquier momento.",
-    image: "https://images.unsplash.com/photo-1553909489-cd47e0ef937f?auto=format&fit=crop&w=900&q=80"
+    image: "assets/sandwich-chicharron.jpg"
   },
   {
     id: "sand-sencca",
@@ -99,7 +99,7 @@ window.MENU_PRODUCTS = [
     available: true,
     tag: "Para llevar",
     description: "Sándwich de sencca con todo el sabor tradicional de picantería en cada bocado.",
-    image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80"
+    image: "assets/sandwich-sencca.jpg"
   },
   {
     id: "chicha",
@@ -109,7 +109,7 @@ window.MENU_PRODUCTS = [
     available: true,
     tag: "Bebida tradicional",
     description: "Refrescante chicha de guiñapo hecha en casa. Consulta presentaciones disponibles.",
-    image: "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=900&q=80"
+    image: "assets/chicha-winapo.jpg"
   }
 ];
 

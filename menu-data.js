@@ -5,7 +5,6 @@
 // para todos tus clientes.
 // - Usa price: null cuando el precio se consulte por WhatsApp.
 // - Cambia available: true por available: false para ocultar un producto.
-// - Los platos principales incluyen "portions" (Plato entero y Medio plato).
 // =====================================================================
 
 window.MENU_CONFIG = {
@@ -29,10 +28,6 @@ window.MENU_PRODUCTS = [
     name: "Chicharrón solo",
     category: "Platos",
     price: 33,
-    portions: [
-      { id: "entero", label: "Plato entero", price: 33 },
-      { id: "medio", label: "Medio plato", price: 19 }
-    ],
     available: true,
     tag: "Favorito de la casa",
     description: "Chicharrón dorado al estilo tradicional arequipeño, crocante y servido generoso.",
@@ -43,10 +38,6 @@ window.MENU_PRODUCTS = [
     name: "Mixto: sencca + chicharrón",
     category: "Platos",
     price: 31,
-    portions: [
-      { id: "entero", label: "Plato entero", price: 31 },
-      { id: "medio", label: "Medio plato", price: 18 }
-    ],
     available: true,
     tag: "Especialidad",
     description: "Lo mejor de nuestra cocina: sencca tradicional y chicharrón crocante en un solo plato.",
@@ -57,10 +48,6 @@ window.MENU_PRODUCTS = [
     name: "Sencca sola",
     category: "Platos",
     price: 27,
-    portions: [
-      { id: "entero", label: "Plato entero", price: 27 },
-      { id: "medio", label: "Medio plato", price: 16 }
-    ],
     available: true,
     tag: "Tradición arequipeña",
     description: "Nuestra sencca preparada con receta tradicional de picantería arequipeña.",

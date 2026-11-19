@@ -5,6 +5,7 @@
 // para todos tus clientes.
 // - Usa price: null cuando el precio se consulte por WhatsApp.
 // - Cambia available: true por available: false para ocultar un producto.
+// - Los platos principales incluyen "portions" (Plato entero y Medio plato).
 // =====================================================================
 
 window.MENU_CONFIG = {
@@ -20,19 +21,27 @@ window.MENU_CONFIG = {
 window.MENU_PRODUCTS = [
   {
     id: "chicharron",
-    name: "Plato de chicharrón",
+    name: "Chicharrón solo",
     category: "Platos",
-    price: 28,
+    price: 32,
+    portions: [
+      { id: "entero", label: "Plato entero", price: 32 },
+      { id: "medio", label: "Medio plato", price: 18 }
+    ],
     available: true,
     tag: "Favorito de la casa",
-    description: "Chicharrón dorado al estilo tradicional arequipeño, servido generoso para disfrutar sin apuro.",
+    description: "Chicharrón dorado al estilo tradicional arequipeño, crocante y servido generoso.",
     image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80"
   },
   {
     id: "mixto",
     name: "Mixto: sencca + chicharrón",
     category: "Platos",
-    price: 35,
+    price: 30,
+    portions: [
+      { id: "entero", label: "Plato entero", price: 30 },
+      { id: "medio", label: "Medio plato", price: 17 }
+    ],
     available: true,
     tag: "Especialidad",
     description: "Lo mejor de nuestra cocina: sencca tradicional y chicharrón crocante en un solo plato.",
@@ -40,12 +49,16 @@ window.MENU_PRODUCTS = [
   },
   {
     id: "sencca",
-    name: "Sencca",
+    name: "Sencca sola",
     category: "Platos",
-    price: null,
+    price: 26,
+    portions: [
+      { id: "entero", label: "Plato entero", price: 26 },
+      { id: "medio", label: "Medio plato", price: 15 }
+    ],
     available: true,
     tag: "Tradición arequipeña",
-    description: "Nuestra sencca preparada con receta tradicional de picantería.",
+    description: "Nuestra sencca preparada con receta tradicional de picantería arequipeña.",
     image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80"
   },
   {
@@ -82,10 +95,10 @@ window.MENU_PRODUCTS = [
     id: "sand-sencca",
     name: "Sándwich de sencca",
     category: "Sándwiches",
-    price: 15,
+    price: 12,
     available: true,
     tag: "Para llevar",
-    description: "Sándwich de sencca con todo el sabor tradicional en cada bocado.",
+    description: "Sándwich de sencca con todo el sabor tradicional de picantería en cada bocado.",
     image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80"
   },
   {
@@ -105,36 +118,54 @@ window.MENU_PROMOS = [
     id: "promo-duo-chicharron",
     icon: "🥓",
     name: "Dúo chicharronero",
-    detail: "2 platos de chicharrón. Precio regular S/ 56.",
-    price: 52,
+    detail: "2 platos enteros de chicharrón solo. Precio regular S/ 64.",
+    price: 60,
     badge: "Ahorra S/ 4",
     available: true
   },
   {
-    id: "promo-duo-sanguches",
+    id: "promo-duo-mixto",
+    icon: "🍲",
+    name: "Dúo mixto picantero",
+    detail: "2 platos enteros mixtos (sencca + chicharrón). Precio regular S/ 60.",
+    price: 56,
+    badge: "Ahorra S/ 4",
+    available: true
+  },
+  {
+    id: "promo-pareja",
+    icon: "❤️",
+    name: "Combo pareja arequipeña",
+    detail: "1 chicharrón entero + 1 sencca entera. Precio regular S/ 58.",
+    price: 54,
+    badge: "Ahorra S/ 4",
+    available: true
+  },
+  {
+    id: "promo-duo-sand-chicha",
     icon: "🥪",
-    name: "Dúo de sánguches",
-    detail: "2 sándwiches a elección (chicharrón o sencca).",
+    name: "Dúo sánguches de chicharrón",
+    detail: "2 sándwiches de chicharrón para compartir. Precio regular S/ 30.",
     price: 28,
     badge: "Ahorra S/ 2",
     available: true
   },
   {
-    id: "promo-tradicion",
-    icon: "🌶️",
-    name: "Tradición arequipeña",
-    detail: "Rocoto relleno + pastel de papa.",
-    price: null,
-    badge: "Combo clásico",
+    id: "promo-sand-mixto",
+    icon: "🥖",
+    name: "Combo sánguches clásico",
+    detail: "1 sándwich de chicharrón + 1 sándwich de sencca. Precio regular S/ 27.",
+    price: 25,
+    badge: "Ahorra S/ 2",
     available: true
   },
   {
-    id: "promo-mixto-chicha",
-    icon: "🍇",
-    name: "Mixto + chicha",
-    detail: "Un plato mixto acompañado de chicha de wiñapo.",
-    price: null,
-    badge: "Para compartir",
+    id: "promo-familiar",
+    icon: "👨‍👩‍👧",
+    name: "Mesa familiar (3 platos)",
+    detail: "1 chicharrón + 1 mixto + 1 sencca (enteros). Precio regular S/ 88.",
+    price: 82,
+    badge: "Ahorra S/ 6",
     available: true
   }
 ];

@@ -465,8 +465,53 @@
       color: var(--ink-soft);
       font-size: 13px;
       line-height: 1.5;
-      margin: 0 0 16px;
+      margin: 0 0 13px;
       flex: 1;
+    }
+    /* Portion Selector (Plato entero / Medio plato) */
+    .portions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin: 0 0 13px;
+    }
+    .portion-btn {
+      border: 1.5px solid var(--sillar);
+      background: var(--cream);
+      color: var(--ink);
+      border-radius: 11px;
+      padding: 7px 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.25;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .portion-btn b {
+      font-size: 12.5px;
+      color: var(--clay-dark);
+    }
+    .portion-btn:hover { border-color: rgba(156, 49, 27, 0.45); }
+    .portion-btn.active {
+      border-color: var(--clay);
+      background: var(--clay-soft);
+      color: var(--clay-dark);
+      box-shadow: 0 2px 8px rgba(156, 49, 27, 0.12);
+    }
+    .portion-qty {
+      display: inline-block;
+      background: var(--clay);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 0 5px;
+      border-radius: 999px;
+      margin-left: 3px;
+      vertical-align: middle;
     }
     .product-foot {
       display: flex;
@@ -1095,7 +1140,10 @@
       }
       .product-body { padding: 12px 13px; }
       .product h3 { font-size: 17px; margin-bottom: 4px; }
-      .product p { font-size: 12.5px; line-height: 1.4; margin-bottom: 11px; }
+      .product p { font-size: 12.5px; line-height: 1.4; margin-bottom: 9px; }
+      .portions { gap: 5px; margin-bottom: 10px; }
+      .portion-btn { padding: 6px 4px; font-size: 10.5px; border-radius: 9px; }
+      .portion-btn b { font-size: 11.5px; }
       .price { font-size: 17px; }
       .add-btn { padding: 8px 13px; font-size: 12.5px; }
 
@@ -1346,6 +1394,7 @@
     let products = loadProducts();
     let promos = defaultPromos.map(x => ({ ...x }));
     let cart = loadCart();
+    let selectedPortions = {};
     let category = "Todos";
     let searchTerm = "";
     let selectedDelivery = "Recojo en el local";
@@ -1353,13 +1402,20 @@
     let selectedPhone = config.whatsappNumbers[0].phone;
     let toastTimer = null;
 
+    function cloneProducts(list) {
+      return list.map(x => ({
+        ...x,
+        portions: x.portions ? x.portions.map(pt => ({ ...pt })) : undefined
+      }));
+    }
+
     function loadProducts() {
       const isAdmin = new URLSearchParams(location.search).get("admin") === "1";
-      if (!isAdmin) return defaultProducts.map(x => ({ ...x }));
+      if (!isAdmin) return cloneProducts(defaultProducts);
       try {
-        return JSON.parse(localStorage.getItem("lg-products")) || defaultProducts.map(x => ({ ...x }));
+        return JSON.parse(localStorage.getItem("lg-products")) || cloneProducts(defaultProducts);
       } catch (e) {
-        return defaultProducts.map(x => ({ ...x }));
+        return cloneProducts(defaultProducts);
       }
     }
 
@@ -1375,12 +1431,40 @@
       try { localStorage.setItem("lg-cart", JSON.stringify(cart)); } catch (e) {}
     }
 
-    function getAllItems() {
-      return [...products, ...promos.map(p => ({ ...p, isPromo: true }))];
+    function getActivePortion(product) {
+      if (!product.portions || !product.portions.length) return null;
+      const chosenId = selectedPortions[product.id];
+      return product.portions.find(pt => pt.id === chosenId) || product.portions[0];
     }
 
-    function findItem(id) {
-      return getAllItems().find(x => x.id === id);
+    function getCartKey(product, portion) {
+      return portion ? `${product.id}__${portion.id}` : product.id;
+    }
+
+    function selectPortion(productId, portionId) {
+      selectedPortions[productId] = portionId;
+      render();
+    }
+
+    function findItem(key) {
+      if (key.includes("__")) {
+        const [prodId, portionId] = key.split("__");
+        const p = products.find(x => x.id === prodId);
+        if (!p || !p.portions) return null;
+        const pt = p.portions.find(x => x.id === portionId);
+        if (!pt) return null;
+        return {
+          id: key,
+          name: `${p.name} (${pt.label})`,
+          price: pt.price,
+          isPromo: false
+        };
+      }
+      const prod = products.find(x => x.id === key);
+      if (prod) return prod;
+      const promo = promos.find(x => x.id === key);
+      if (promo) return { ...promo, isPromo: true };
+      return null;
     }
 
     function money(v) {
@@ -1448,9 +1532,29 @@
       });
 
       document.getElementById("productGrid").innerHTML = visible.length ? visible.map(p => {
-        const inCart = (cart[p.id] || 0) > 0;
-        const known = isPriceKnown(p.price);
-        return `<article class="product ${inCart ? 'in-cart' : ''}">
+        const activePortion = getActivePortion(p);
+        const activeKey = getCartKey(p, activePortion);
+        const activePrice = activePortion ? activePortion.price : p.price;
+        const known = isPriceKnown(activePrice);
+        const anyInCart = p.portions
+          ? p.portions.some(pt => (cart[getCartKey(p, pt)] || 0) > 0)
+          : (cart[p.id] || 0) > 0;
+
+        const portionsHtml = p.portions && p.portions.length ? `
+          <div class="portions" role="group" aria-label="Porción de ${p.name}">
+            ${p.portions.map(pt => {
+              const ptKey = getCartKey(p, pt);
+              const ptQty = cart[ptKey] || 0;
+              const isSelected = activePortion && activePortion.id === pt.id;
+              return `<button type="button" class="portion-btn ${isSelected ? 'active' : ''}" onclick="selectPortion('${p.id}', '${pt.id}')">
+                <span>${pt.label}${ptQty > 0 ? `<span class="portion-qty">${ptQty}</span>` : ''}</span>
+                <b>${money(pt.price)}</b>
+              </button>`;
+            }).join("")}
+          </div>
+        ` : "";
+
+        return `<article class="product ${anyInCart ? 'in-cart' : ''}">
           <div class="product-img">
             <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='assets/logo-las-gallegos.png';this.style.objectFit='contain';this.style.padding='14px'">
             <span class="tag">${p.tag || p.category}</span>
@@ -1458,9 +1562,10 @@
           <div class="product-body">
             <h3>${p.name}</h3>
             <p>${p.description || ""}</p>
+            ${portionsHtml}
             <div class="product-foot">
-              <div class="price ${known ? '' : 'consult'}">${money(p.price)}</div>
-              ${renderControl(p.id)}
+              <div class="price ${known ? '' : 'consult'}">${money(activePrice)}</div>
+              ${renderControl(activeKey)}
             </div>
           </div>
         </article>`;
@@ -1645,23 +1750,36 @@
     function initAdmin() {
       if (new URLSearchParams(location.search).get("admin") !== "1") return;
       document.getElementById("adminPanel").classList.add("show");
-      document.getElementById("adminGrid").innerHTML = products.map((p, i) => `
-        <div class="admin-row">
+      document.getElementById("adminGrid").innerHTML = products.map((p, i) => {
+        const inputs = p.portions && p.portions.length
+          ? p.portions.map((pt, j) => `
+              <label style="font-size:11.5px;color:var(--ink-soft);margin-top:${j ? 8 : 0}px">${pt.label}</label>
+              <input aria-label="Precio ${p.name} ${pt.label}" type="number" min="0" step="0.5" placeholder="Vacío = Consultar" value="${pt.price ?? ''}" id="price-${i}-${j}">
+            `).join("")
+          : `<input aria-label="Precio ${p.name}" type="number" min="0" step="0.5" placeholder="Vacío = Consultar" value="${p.price ?? ''}" id="price-${i}">`;
+        return `<div class="admin-row">
           <label>${p.name}</label>
-          <input aria-label="Precio ${p.name}" type="number" min="0" step="0.5" placeholder="Vacío = Consultar" value="${p.price ?? ''}" id="price-${i}">
+          ${inputs}
           <label class="admin-check">
             <input type="checkbox" id="avail-${i}" ${p.available ? 'checked' : ''}> Disponible en la carta
           </label>
-        </div>
-      `).join("");
+        </div>`;
+      }).join("");
     }
 
     function saveAdmin() {
-      products = products.map((p, i) => ({
-        ...p,
-        price: document.getElementById(`price-${i}`).value === "" ? null : Number(document.getElementById(`price-${i}`).value),
-        available: document.getElementById(`avail-${i}`).checked
-      }));
+      products = products.map((p, i) => {
+        const available = document.getElementById(`avail-${i}`).checked;
+        if (p.portions && p.portions.length) {
+          const portions = p.portions.map((pt, j) => {
+            const val = document.getElementById(`price-${i}-${j}`).value;
+            return { ...pt, price: val === "" ? null : Number(val) };
+          });
+          return { ...p, price: portions[0].price, portions, available };
+        }
+        const val = document.getElementById(`price-${i}`).value;
+        return { ...p, price: val === "" ? null : Number(val), available };
+      });
       localStorage.setItem("lg-products", JSON.stringify(products));
       render();
       showToast("✓ Vista previa actualizada en este navegador");
@@ -1679,7 +1797,7 @@
 
     function resetAdmin() {
       localStorage.removeItem("lg-products");
-      products = defaultProducts.map(x => ({ ...x }));
+      products = cloneProducts(defaultProducts);
       render();
       initAdmin();
       showToast("Datos restaurados");
